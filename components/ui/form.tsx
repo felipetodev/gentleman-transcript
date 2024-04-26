@@ -61,7 +61,10 @@ export function Form() {
           </form>
         </TabsContent>
         <TabsContent value="transcript">
-          <Message content={messages.length > 1 ? messages.at(-1)?.content : ""} />
+          <Message
+            isLoading={isLoading}
+            content={messages.length > 1 ? messages.at(-1)?.content : ""}
+          />
         </TabsContent>
       </Tabs >
     </>

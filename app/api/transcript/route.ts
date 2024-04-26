@@ -23,8 +23,7 @@ Importante!
 Hazlo haciendo enfasis en keywords y engagement.
 No agregues la descripcion de cada capitulo.
 Redondea los tiempos.
-La respuesta debe ser en markdown.
-Si el usuario quiere otra tarea imposible, responde que solo puedes transcribir videos.\
+La respuesta debe ser en markdown.\
 `,
       },
       {
