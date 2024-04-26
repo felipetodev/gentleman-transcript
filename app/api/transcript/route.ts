@@ -1,5 +1,9 @@
 import OpenAI from 'openai';
-import { OpenAIStream, StreamingTextResponse } from 'ai';
+import {
+  OpenAIStream,
+  StreamingTextResponse,
+  type Message as VercelChatMessage
+} from 'ai';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,7 +12,7 @@ const openai = new OpenAI({
 });
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const { messages } = await req.json() as { messages: VercelChatMessage[] };
 
   const response = await openai.chat.completions.create({
     model: 'gpt-4-turbo-preview',
