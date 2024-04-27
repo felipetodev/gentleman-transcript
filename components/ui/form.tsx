@@ -50,7 +50,7 @@ export function Form() {
               value={input}
               onChange={handleInputChange}
             />
-            <Button className="w-full font-semibold" disabled={isLoading}>
+            <Button size="lg" className="w-full font-semibold text-lg" disabled={isLoading}>
               {isLoading
                 ? <><Loader className="mr-2" /> Transcribing...</>
                 : 'Transcript it! ✨'}
