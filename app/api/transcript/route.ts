@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 
   const response = localLLM
     ? await ollama.chat.completions.create({
-      model: 'llama2',
+      model: 'llama3',
       stream: true,
       messages: promptTemplate(currentMessage),
     })
