@@ -1,6 +1,6 @@
 import { Header } from "@/components/header";
 import { LLMSwitch } from "@/components/llm-switch";
-import { Form } from "@/components/ui/form";
+import { Form } from "@/components/form";
 import { cookies } from "next/headers";
 
 export default function Home() {

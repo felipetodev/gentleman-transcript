@@ -19,8 +19,7 @@ const ollama = new OpenAI({
 });
 
 export async function POST(req: Request) {
-  const { messages } = await req.json() as { messages: VercelChatMessage[] };
-  const currentMessage = messages[messages.length - 1].content;
+  const { message } = await req.json() as { message: string };
   const llmChoice = cookies().get("local-llm")
   const localLLM = llmChoice ? JSON.parse(llmChoice.value) : undefined
 
@@ -28,12 +27,12 @@ export async function POST(req: Request) {
     ? await ollama.chat.completions.create({
       model: 'llama3',
       stream: true,
-      messages: promptTemplate(currentMessage),
+      messages: promptTemplate(message),
     })
     : await openai.chat.completions.create({
       model: 'gpt-4-turbo-preview',
       stream: true,
-      messages: promptTemplate(currentMessage),
+      messages: promptTemplate(message),
     });
 
   const stream = OpenAIStream(response);
