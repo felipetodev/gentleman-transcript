@@ -4,6 +4,8 @@ import {
   StreamingTextResponse,
   type Message as VercelChatMessage
 } from 'ai';
+import { promptTemplate } from '@/lib/prompt';
+import { cookies } from 'next/headers'
 
 export const dynamic = 'force-dynamic';
 
@@ -11,31 +13,28 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
 
+const ollama = new OpenAI({
+  baseURL: 'http://localhost:11434/v1',
+  apiKey: 'ollama',
+});
+
 export async function POST(req: Request) {
   const { messages } = await req.json() as { messages: VercelChatMessage[] };
+  const currentMessage = messages[messages.length - 1].content;
+  const llmChoice = cookies().get("local-llm")
+  const localLLM = llmChoice ? JSON.parse(llmChoice.value) : undefined
 
-  const response = await openai.chat.completions.create({
-    model: 'gpt-4-turbo-preview',
-    stream: true,
-    messages: [
-      {
-        role: 'system',
-        content: `\
-Genera chapters de YouTube para el timeline utilizando el siguiente transcript y hazlo en el siguiente formato:
-"0:00:00 titulo del chapter"
-Importante!
-Hazlo haciendo enfasis en keywords y engagement.
-No agregues la descripcion de cada capitulo.
-Redondea los tiempos.
-La respuesta debe ser en markdown.\
-`,
-      },
-      {
-        role: 'user',
-        content: messages[0].content.replaceAll('\n', ''),
-      }
-    ],
-  });
+  const response = localLLM
+    ? await ollama.chat.completions.create({
+      model: 'llama2',
+      stream: true,
+      messages: promptTemplate(currentMessage),
+    })
+    : await openai.chat.completions.create({
+      model: 'gpt-4-turbo-preview',
+      stream: true,
+      messages: promptTemplate(currentMessage),
+    });
 
   const stream = OpenAIStream(response);
 
