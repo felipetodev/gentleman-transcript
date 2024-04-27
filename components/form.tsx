@@ -56,9 +56,7 @@ export function Form() {
                 return toast.warning('Please enter a valid transcript')
               }
 
-              complete(inputValidation.data, {
-                body: { message: inputValidation.data }
-              })
+              complete(inputValidation.data)
             }}
           >
             <Textarea

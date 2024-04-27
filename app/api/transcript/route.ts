@@ -18,7 +18,7 @@ const ollama = new OpenAI({
 });
 
 export async function POST(req: Request) {
-  const { message } = await req.json() as { message: string };
+  const { prompt: message } = await req.json() as { prompt: string };
   const llmChoice = cookies().get("local-llm")
   const localLLM = llmChoice ? JSON.parse(llmChoice.value) : undefined
 
