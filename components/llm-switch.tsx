@@ -13,7 +13,6 @@ export function LLMSwitch({ llm }: { llm?: boolean }) {
         id="llm-model"
         defaultChecked={Boolean(llm)}
         onCheckedChange={(active) => {
-          console.log({ active })
           document.cookie = `local-llm=${JSON.stringify(
             active
           )}`
