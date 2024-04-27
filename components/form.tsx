@@ -12,9 +12,9 @@ import {
 import { Message } from '@/components/message'
 import { placeholder } from "@/lib/utils"
 import { useCompletion } from "ai/react"
+import { completionSchema } from "@/lib/schema"
 import { Loader } from "./loader"
 import { toast } from "sonner"
-import { z } from 'zod'
 
 export function Form() {
   const [message, setMessage] = useState<string>("")
@@ -46,11 +46,7 @@ export function Form() {
             onSubmit={(e) => {
               e.preventDefault()
 
-              const inputValidation = z
-                .string()
-                .trim()
-                .min(100)
-                .safeParse(message)
+              const inputValidation = completionSchema.safeParse(message)
 
               if (!inputValidation.success) {
                 return toast.warning('Please enter a valid transcript')

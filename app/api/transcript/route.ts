@@ -4,6 +4,7 @@ import {
   StreamingTextResponse
 } from 'ai';
 import { promptTemplate } from '@/lib/prompt';
+import { completionSchema } from '@/lib/schema';
 import { cookies } from 'next/headers'
 
 export const dynamic = 'force-dynamic';
@@ -19,6 +20,13 @@ const ollama = new OpenAI({
 
 export async function POST(req: Request) {
   const { prompt: message } = await req.json() as { prompt: string };
+
+  const validation = completionSchema.safeParse(message);
+
+  if (!validation.success) {
+    throw new Error('Unauthorized');
+  }
+
   const llmChoice = cookies().get("local-llm")
   const localLLM = llmChoice ? JSON.parse(llmChoice.value) : undefined
 
