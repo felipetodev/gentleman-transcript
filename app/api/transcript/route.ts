@@ -1,8 +1,7 @@
 import OpenAI from 'openai';
 import {
   OpenAIStream,
-  StreamingTextResponse,
-  type Message as VercelChatMessage
+  StreamingTextResponse
 } from 'ai';
 import { promptTemplate } from '@/lib/prompt';
 import { cookies } from 'next/headers'
