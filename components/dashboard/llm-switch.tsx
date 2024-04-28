@@ -2,7 +2,7 @@
 "use client"
 
 import { Switch } from "@/components/ui/switch"
-import { OpenAI } from "./ui/icons"
+import { OpenAI } from "../ui/icons"
 
 export function LLMSwitch({ llm }: { llm?: boolean }) {
 

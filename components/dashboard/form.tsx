@@ -9,11 +9,11 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { Message } from '@/components/message'
+import { Message } from '@/components/dashboard/message'
 import { placeholder } from "@/lib/utils"
 import { useCompletion } from "ai/react"
 import { completionSchema } from "@/lib/schema"
-import { Loader } from "./loader"
+import { Loader } from "@/components/loader"
 import { toast } from "sonner"
 
 export function Form() {

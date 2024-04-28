@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner"
-import { GitIc } from "@/components/ui/icons";
+import { Providers } from "@/components/providers";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -19,19 +19,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <p className="absolute top-4 right-8">
-          <a
-            href="https://github.com/felipetodev/gentleman-transcript"
-            aria-label="View app repository on GitHub"
-            rel="noreferrer"
-            target="_blank"
-            className="flex items-center gap-2 text-secondary"
-          >
-            <GitIc className="size-5 " />
-            GitHub
-          </a>
-        </p>
-        {children}
+        <Providers>
+          <main className="absolute inset-0 -z-10 h-full w-full items-center [background:radial-gradient(125%_125%_at_50%_10%,#000_40%,#63e_100%)] overflow-y-auto">
+            {children}
+          </main>
+        </Providers>
         <Toaster position="top-center" richColors />
       </body>
     </html>

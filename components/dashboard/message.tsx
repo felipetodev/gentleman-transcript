@@ -1,7 +1,7 @@
 import Markdown from 'react-markdown'
 import { toast } from "sonner"
+import { Loader } from '@/components/loader'
 import { cn } from '@/lib/utils'
-import { Loader } from './loader'
 
 export function Message({ content, isLoading }: { content?: string, isLoading: boolean }) {
 
