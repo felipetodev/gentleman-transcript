@@ -54,7 +54,7 @@ export function Header() {
         </ul>
 
         <Link
-          href="/transcript"
+          href="/app"
           className="hidden md:inline-flex h-8 items-center justify-center rounded-md text-sm font-medium transition-colors px-3 py-2 text-primary-foreground bg-[#63e] hover:bg-[#63e]/90"
         >
           Sign in

@@ -27,7 +27,7 @@ export default function App() {
           </span>
         </div>
         <div className="mx-auto mt-14 animate-fade-in-up duration-700">
-          <Link href='/transcript' className={cn(buttonVariants({ variant: 'secondary' }))}>
+          <Link href='/app' className={cn(buttonVariants({ variant: 'secondary' }))}>
             Get Started
           </Link>
         </div>
