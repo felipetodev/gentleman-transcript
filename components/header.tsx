@@ -1,8 +1,5 @@
-"use client";
-
 import Link from "next/link";
 import { Moustache } from "./ui/icons";
-import { cn } from "@/lib/utils";
 
 const links = [
   {
@@ -42,10 +39,7 @@ export function Header() {
                   rel: "noopener noreferrer",
                   target: "_blank"
                 } : {}}
-                className={cn(
-                  "h-8 items-center !text-white justify-center rounded-md text-sm font-medium transition-colors px-3 py-2 inline-flex text-secondary-foreground hover:bg-[#63e] hover:text-white",
-                  // isActive && "bg-secondary hover:bg-secondary"
-                )}
+                className="h-8 items-center !text-white justify-center rounded-md text-sm font-medium transition-colors px-3 py-2 inline-flex text-secondary-foreground hover:bg-[#63e] hover:text-white"
               >
                 {title}
               </Link>
