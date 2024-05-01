@@ -20,8 +20,12 @@ export function Form() {
   const [message, setMessage] = useState<string>("")
   const { completion, complete, isLoading } = useCompletion({
     api: 'api/transcript',
-    onError: () => {
-      toast.error('Something went wrong, please try again later.')
+    onError: (error) => {
+      if (error.message.includes("Upgrade to Pro")) {
+        toast.warning(error.message)
+      } else {
+        toast.error('Something went wrong, please try again later.')
+      }
     }
   });
 

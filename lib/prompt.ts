@@ -10,6 +10,7 @@ const summaryTemplate = dedent(`
   --------
   From the transcript above, please provide the most important chapters with timestamps.
   Ensure that the title (hook) of each chapter is relevant and engaging to the user and accurately represents the content of the chapter.
+  Ensure that the first chapter commences precisely at timestamp 00:00:00 and concludes at the final timestamp of the transcription.
   Your response only needs to include the timestamps and titles in the following format below. Eg.:
   --------
   00:00:00 Introducción a Go, resaltando su importancia y velocidad.
