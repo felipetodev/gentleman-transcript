@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import * as React from "react";
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import {
@@ -10,16 +10,37 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { Message } from '@/components/dashboard/message'
+import { TranscriptGenerator } from "@/components/dashboard/transcript-generator";
+import { Loader } from "@/components/loader"
 import { placeholder } from "@/lib/utils"
 import { useCompletion } from "ai/react"
 import { completionSchema } from "@/lib/schema"
-import { Loader } from "@/components/loader"
 import { toast } from "sonner"
 
-export function Form() {
-  const [message, setMessage] = useState<string>("")
+type FormContextProps = {
+  isLoadingTranscript: boolean;
+  onLoadingTranscript: (boolean: boolean) => void;
+  onSetMessage: (message: string) => void;
+};
+
+export const TranscriptFormContext = React.createContext<FormContextProps | null>(null);
+
+function useTranscriptForm() {
+  const context = React.useContext(TranscriptFormContext);
+
+  if (!context) {
+    throw new Error("useTranscriptForm must be used within a <TranscriptForm />");
+  }
+
+  return context;
+}
+
+const TranscriptForm = () => {
+  const [message, setMessage] = React.useState("")
+  const [loadTranscript, setLoadTranscript] = React.useState(false)
+
   const { completion, complete, isLoading } = useCompletion({
-    api: 'api/transcript',
+    api: 'api/completion',
     onError: (error) => {
       if (error.message.includes("Upgrade to Pro")) {
         toast.warning(error.message)
@@ -29,8 +50,22 @@ export function Form() {
     }
   });
 
+  const onLoadingTranscript = (value: boolean) => {
+    setLoadTranscript(value)
+  }
+
+  const onSetMessage = (message: string) => {
+    setMessage(message)
+  }
+
   return (
-    <>
+    <TranscriptFormContext.Provider
+      value={{
+        isLoadingTranscript: loadTranscript,
+        onLoadingTranscript,
+        onSetMessage
+      }}
+    >
       <Tabs defaultValue="form">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="form">Input</TabsTrigger>
@@ -45,6 +80,7 @@ export function Form() {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="form">
+          <TranscriptGenerator />
           <form
             className="relative"
             onSubmit={(e) => {
@@ -65,7 +101,7 @@ export function Form() {
               value={message}
               onChange={({ target }) => setMessage(target.value)}
               className="min-h-[500px] mb-4"
-              placeholder={placeholder}
+              placeholder={loadTranscript ? "Getting transcript from the YouTube video..." : placeholder}
             />
             <Button size="lg" className="w-full font-semibold text-lg" disabled={isLoading}>
               {isLoading
@@ -73,7 +109,7 @@ export function Form() {
                 : 'Transcript it! ✨'}
             </Button>
             <span className="border rounded-lg bg-primary text-secondary absolute top-2 right-2 text-xs px-3 py-1 text-center">
-              {message.replaceAll('\n', '').length}
+              {message.length}
             </span>
           </form>
         </TabsContent>
@@ -84,6 +120,13 @@ export function Form() {
           />
         </TabsContent>
       </Tabs >
-    </>
+    </TranscriptFormContext.Provider>
   )
+}
+
+TranscriptForm.displayName = "TranscriptForm"
+
+export {
+  useTranscriptForm,
+  TranscriptForm
 }

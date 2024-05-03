@@ -1,5 +1,5 @@
 import { LLMSwitch } from "@/components/dashboard/llm-switch";
-import { Form } from "@/components/dashboard/form";
+import { TranscriptForm } from "@/components/dashboard/form";
 import { cookies } from "next/headers";
 
 export default function TranscriptPage() {
@@ -8,7 +8,7 @@ export default function TranscriptPage() {
   return (
     <>
       <LLMSwitch llm={defaultLLM} />
-      <Form />
+      <TranscriptForm />
     </>
   );
 }

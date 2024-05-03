@@ -1,77 +1,143 @@
-import { type NextRequest } from 'next/server';
-import { StreamingTextResponse, LangChainStream } from 'ai';
-import { ChatOpenAI } from "@langchain/openai";
-import { Ollama } from "@langchain/community/llms/ollama";
-import { loadSummarizationChain } from "langchain/chains";
-import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { completionSchema } from '@/lib/schema';
-import { SUMMARY_PROMPT, SUMMARY_REFINE_PROMPT } from '@/lib/prompt';
-import { cookies } from 'next/headers';
-import { getAuth } from '@clerk/nextjs/server';
-import { env } from '@/env';
-import { db } from '@/server/db';
-import { users } from '@/server/db/schema';
-import { eq } from 'drizzle-orm';
+// Code extracted from: https://github.com/xenova/chat-with-youtube/blob/main/extension/src/content.js
+import { getAuth } from "@clerk/nextjs/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic';
+interface Events {
+  tStartMs: number;
+  dDurationMs?: number;
+  id?: number;
+  wpWinPosId?: number;
+  wsWinStyleId?: number;
+  wWinId?: number;
+  segs?: Seg[];
+  aAppend?: number;
+}
+
+interface Seg {
+  utf8: string;
+  acAsrConf?: number;
+  tOffsetMs?: number;
+}
+
+// Regex to parse the player response from the page (when transcript is not available on the window)
+const YT_INITIAL_PLAYER_RESPONSE_RE = /ytInitialPlayerResponse\s*=\s*({.+?})\s*;\s*(?:var\s+(?:meta|head)|<\/script|\n)/
+
+const getVideoId = (url: string): string | null => {
+  if (!url.trim()) return "";
+  const match = url.match(
+    /.*(?:youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#&?]*).*/
+  );
+  if (match !== null && match[1].length === 11) {
+    return match[1];
+  } else {
+    return null
+  }
+}
+
+/**
+ * Comparison function used to sort tracks by priority
+ */
+type Track = { languageCode: string; kind: string };
+
+function compareTracks(track1: Track, track2: Track) {
+  const langCode1 = track1.languageCode;
+  const langCode2 = track2.languageCode;
+
+  if (langCode1 === 'en' && langCode2 !== 'en') {
+    return -1; // English comes first
+  } else if (langCode1 !== 'en' && langCode2 === 'en') {
+    return 1; // English comes first
+  } else if (track1.kind !== 'asr' && track2.kind === 'asr') {
+    return -1; // Non-ASR comes first
+  } else if (track1.kind === 'asr' && track2.kind !== 'asr') {
+    return 1; // Non-ASR comes first
+  }
+
+  return 0; // Preserve order if both have same priority
+}
 
 export async function POST(req: NextRequest) {
-  const { prompt: message } = await req.json() as { prompt: string };
+  const { url } = await req.json() as { url: string };
+
   const { userId } = getAuth(req);
 
-  const validation = completionSchema.safeParse(message);
-
-  if (!validation.success || !env.OPENAI_API_KEY || !userId) {
+  if (!userId) {
     throw new Error('Unauthorized');
   }
 
-  const account = await db.query.users.findFirst({
-    where: eq(users.userId, userId)
-  })
+  const videoID = getVideoId(url);
 
-  const llmChoice = cookies().get("local-llm")
-  const localLLM = llmChoice ? JSON.parse(llmChoice.value) : undefined
-
-  if (account?.status !== "ACTIVE" && !localLLM) {
-    return new Response(
-      "Upgrade to Pro to get access to this feature.",
-      { status: 402 },
-    );
+  if (!videoID) {
+    return NextResponse.json({ error: 'Invalid YouTube URL' }, { status: 400 });
   }
 
-  const llm = localLLM
-    ? new Ollama({
-      baseUrl: "http://localhost:11434",
-      model: "llama3"
+  const pageData = fetch(`https://www.youtube.com/watch?v=${videoID}`);
+  const body = await (await pageData).text();
+  const playerResponse = body.match(YT_INITIAL_PLAYER_RESPONSE_RE);
+  if (!playerResponse) {
+    NextResponse.json({ error: 'Unable to parse video' }, { status: 400 });
+    return;
+  }
+
+  const player = JSON.parse(playerResponse[1]);
+  const metadata = {
+    title: player.videoDetails.title,
+    duration: player.videoDetails.lengthSeconds,
+    author: player.videoDetails.author,
+    views: player.videoDetails.viewCount,
+  }
+
+  console.log(metadata)
+
+  // Get the tracks and sort them by priority
+  const tracks = player.captions.playerCaptionsTracklistRenderer.captionTracks;
+  tracks.sort(compareTracks);
+
+  // Get the transcript
+  const transcript = await (await fetch(tracks[0].baseUrl + '&fmt=json3')).json();
+
+  const parsed = (transcript.events as Events[])
+    .map((t) => ({
+      segs: t.segs,
+      timestamp: `${millisecondsToTime(t.tStartMs)} --> ${millisecondsToTime(t.tStartMs + (t.dDurationMs ?? 0))}`,
+    }))
+    .filter((t) => t.segs)
+    .filter(x => Boolean(x.segs?.[0].utf8.replace('\n', '')))
+    .map((x) => {
+      return {
+        timestamp: x.timestamp,
+        content: x.segs!.map((y) => y.utf8).join(" "),
+      };
     })
-    : new ChatOpenAI({
-      model: 'gpt-3.5-turbo',
-      temperature: 0.2,
-      streaming: true,
-      apiKey: env.OPENAI_API_KEY,
-    });
 
-  const textSplitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 10000,
-    chunkOverlap: 250,
-  });
-  const docs = await textSplitter.createDocuments([message]);
+  const parsedTranscript = parsed
+    .map((t) => `${t.timestamp}\n${t.content}`) // maybe unnecessary new line at the end
+    .join("\n\n")
+    .replaceAll('  ', ' ')
 
-  const chain = loadSummarizationChain(llm, {
-    type: "refine",
-    verbose: true,
-    questionPrompt: SUMMARY_PROMPT,
-    refinePrompt: SUMMARY_REFINE_PROMPT,
-  });
+  const parsedContent = parsed
+    .map((t) => t.content)
+    .join(' ')
+    // Remove invalid characters
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
+    // Replace any whitespace with a single space
+    .replace(/\s+/g, ' ');
 
-  const { stream, handlers } = LangChainStream();
+  return NextResponse.json({ parsedContent, parsedTranscript, metadata })
+}
 
-  chain.invoke(
-    {
-      input_documents: docs,
-    },
-    { callbacks: [handlers], metadata: { account } }
-  );
+function millisecondsToTime(duration: number): string {
+  let milliseconds: string | number = parseInt(((duration % 1000)).toString()),
+    seconds: string | number = Math.floor((duration / 1000) % 60),
+    minutes: string | number = Math.floor((duration / (1000 * 60)) % 60),
+    hours: string | number = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
-  return new StreamingTextResponse(stream);
+  hours = (hours < 10) ? "0" + hours : hours;
+  minutes = (minutes < 10) ? "0" + minutes : minutes;
+  seconds = (seconds < 10) ? "0" + seconds : seconds;
+  milliseconds = (milliseconds < 100) ? (milliseconds < 10 ? "00" + milliseconds : "0" + milliseconds) : milliseconds;
+
+  milliseconds = Math.round(Number(milliseconds) / 10);
+
+  return hours + ":" + minutes + ":" + seconds + ":" + milliseconds;
 }
