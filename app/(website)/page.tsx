@@ -29,6 +29,15 @@ export default function App() {
           Get Started
         </Link>
       </div>
+      <div className="mt-10 mb-20 p-2 rounded-[23px] lg:rounded-[29px] border-2 border-[#63e]/80 bg-gray-900/5 [box-shadow:_0px_0px_3px_1px_rgba(112,_116,_123,_0.05)]">
+        <video
+          loop
+          muted
+          autoPlay
+          className="size-full object-cover rounded-[18px] overflow-clip"
+          src="/landing-example.mov"
+        />
+      </div>
     </>
   )
 }
