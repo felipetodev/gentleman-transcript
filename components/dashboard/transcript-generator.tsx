@@ -67,7 +67,7 @@ export function TranscriptGenerator() {
         }}
       >
         {isLoadingTranscript && <Loader className="mr-2 text-primary" />}
-        {isLoadingTranscript ? "Generating transcript..." : "Get Transcribe from YouTube URL"}
+        {isLoadingTranscript ? "Generating transcript..." : "Get transcript from YouTube"}
       </Button>
     </div>
   )

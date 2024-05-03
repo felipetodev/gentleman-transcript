@@ -6,25 +6,28 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const placeholder = `\
-Example:
+Fireship "Supabase in 100 Seconds" transcript example:
 
-00:00:01:22 - 00:00:06:08
-bueno gente Hello Hello Hello
+00:00:00:18 --> 00:00:04:98
+Supabase a complete back end for web
 
-00:00:04:13 - 00:00:08:04
-Bienvenidos a otro Stream video
+00:00:02:82 --> 00:00:07:26
+and mobile applications based entirely
 
-00:00:06:08 - 00:00:10:20
-impresionante de G
+00:00:04:98 --> 00:00:09:30
+on free open source software the biggest
 
-00:00:08:04 - 00:00:12:11
-programming en el día de hoy vamos a
+00:00:07:26 --> 00:00:11:52
+challenge when building an app is not
 
-00:00:10:20 - 00:00:14:21
-estar viendo la primera parte de un
+00:00:09:30 --> 00:00:13:44
+writing code but rather architecting a
 
-00:00:12:11 - 00:00:17:01
-curso de dos partes y el día de hoy
+00:00:11:52 --> 00:00:15:90
+complete system that works at scale
+
+00:00:13:44 --> 00:00:17:64
+products like Firebase and amplify have
 
 ....
 `
