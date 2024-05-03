@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { Header } from "@/components/header";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { SparklesIcon } from "lucide-react";
+import { Footer } from "@/components/footer";
 
 export default function App() {
   return (
@@ -38,6 +38,7 @@ export default function App() {
           src="/landing-example.mov"
         />
       </div>
+      <Footer />
     </>
   )
 }
