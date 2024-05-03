@@ -1,7 +1,7 @@
 import dedent from "dedent";
 import { PromptTemplate } from "langchain/prompts";
 
-const summaryTemplate = dedent(`
+const transcriptTemplate = dedent(`
   You are a helpful expert transcript bot that generates chapters with timestamps to help users find the most interesting and important moments in a YouTube video.
 
   Below you find a raw transcript of a YouTube video:
@@ -29,7 +29,7 @@ const summaryTemplate = dedent(`
 
   CHAPTERS AND TIMESTAMPS:`);
 
-const summaryRefineTemplate = dedent(`\
+const transcriptRefineTemplate = dedent(`\
   You are a helpful expert transcript bot that generates chapters with timestamps to help users find the most interesting and important moments in a YouTube video.
 
   We have provided an existing answer: {existing_answer}
@@ -63,10 +63,10 @@ const summaryRefineTemplate = dedent(`\
 
   REFINED CHAPTERS AND TIMESTAMPS:`);
 
-export const SUMMARY_PROMPT = PromptTemplate.fromTemplate(
-  summaryTemplate
+export const TRANSCRIPT_PROMPT = PromptTemplate.fromTemplate(
+  transcriptTemplate
 );
 
-export const SUMMARY_REFINE_PROMPT = PromptTemplate.fromTemplate(
-  summaryRefineTemplate
+export const TRANSCRIPT_REFINE_PROMPT = PromptTemplate.fromTemplate(
+  transcriptRefineTemplate
 );
