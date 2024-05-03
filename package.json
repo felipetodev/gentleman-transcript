@@ -1,7 +1,12 @@
 {
-  "name": "gentleman-yt-parser",
+  "name": "gentleman-transcript",
   "version": "0.1.0",
   "private": true,
+  "license": "AGPL-3.0-or-later",
+  "author": {
+    "name": "Felipe Ossandon",
+    "email": "fe.ossandon.u@gmail.com"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
