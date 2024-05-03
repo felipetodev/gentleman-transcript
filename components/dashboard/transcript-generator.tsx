@@ -51,7 +51,7 @@ export function TranscriptGenerator() {
               successTranscriptRef.current = true
               onSetMessage(parsedTranscript)
               toast.success(
-                <div className="grid text-center gap-1">
+                <div className="mx-auto grid text-center gap-1">
                   <span className="font-semibold">Transcript video generated successfully!</span>
                   <span>{metadata.title}</span>
                 </div>
