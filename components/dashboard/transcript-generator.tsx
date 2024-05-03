@@ -35,6 +35,7 @@ export function TranscriptGenerator() {
       </div>
       <Button
         variant="secondary"
+        disabled={isLoadingTranscript}
         onClick={async () => {
           if (!inputRef.current?.value) {
             return toast.warning('Please enter a valid YouTube url to get the transcript')
@@ -65,7 +66,7 @@ export function TranscriptGenerator() {
           onLoadingTranscript(false)
         }}
       >
-        {isLoadingTranscript && <Loader className="mr-2" />}
+        {isLoadingTranscript && <Loader className="mr-2 text-primary" />}
         {isLoadingTranscript ? "Generating transcript..." : "Get Transcribe from YouTube URL"}
       </Button>
     </div>
