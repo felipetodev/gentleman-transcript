@@ -22,10 +22,8 @@ export function HeaderDashboard({ user = false, credits = 0, hasPayment }: Props
         </Link>
         {user && (
           <>
-            {hasPayment && credits && credits > 0 ? (
+            {hasPayment && credits && credits > 0 && (
               <Badge variant="gentleman">PRO</Badge>
-            ) : (
-              <Badge variant="secondary">Free</Badge>
             )}
             {!hasPayment && credits && (
               <Badge variant="secondary">Free</Badge>
