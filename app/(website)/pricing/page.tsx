@@ -1,26 +1,31 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation'
-import Stripe from "stripe";
-import { CheckIcon, Layers2Icon } from "lucide-react";
+import { CircleCheckIcon } from "lucide-react";
 import { buttonVariants } from '@/components/ui/button';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import { checkoutAction } from './actions';
 import { SubmitButton } from './_components/submit';
 import { auth } from '@clerk/nextjs/server';
 import { cn } from '@/lib/utils';
-import { env } from "@/env";
 
 const FREE_FEATURES = {
   title: 'Free plan',
   price: 0,
   description: 'For hobby & casual users.',
   features: [
-    'Llama 3 local AI transcriptions',
+    '5 free credits for new users',
+    'Unlimited Llama 3 local AI transcriptions',
     'Basic support'
   ]
 }
 
-const PRO_FEATURES = {
-  title: 'Pro plan',
-  price: 10,
+const CREDITS = {
+  title: 'Full access',
   description: 'Best option for content creators with a growing audience.',
   features: [
     'Unlimited AI transcriptions',
@@ -30,101 +35,111 @@ const PRO_FEATURES = {
   ]
 };
 
-async function getSubscriptionCheckoutUrl(userId: string) {
-  const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-    apiVersion: "2024-04-10"
-  })
-
-  const url = env.URL || process.env.VERCEL_URL
-
-  const checkoutSession = await stripe.checkout.sessions.create({
-    mode: "subscription",
-    line_items: [
-      {
-        price: env.STRIPE_SUBSCRIPTION_PRICE_ID,
-        quantity: 1
-      }
-    ],
-    success_url: `${url}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${url}/pricing`,
-    subscription_data: {
-      metadata: {
-        userId
-      }
-    }
-  })
-
-  if (!checkoutSession.url) {
-    throw new Error("Failed to create checkout session")
-  }
-
-  return { redirectUrl: checkoutSession.url }
-}
-
 export default async function PricingPage() {
   const { userId } = auth();
 
   return (
-    <div className="animate-fade-in-up grid gap-10 grid-cols-1 md:grid-cols-2">
-      <div className="flex flex-col p-6 w-full mx-auto max-w-md text-center text-gray-900 bg-white rounded-lg border-2 shadow border-black xl:p-8">
-        <h3 className="mb-4 text-2xl font-semibold bg-black text-white w-max mx-auto rounded-full px-6 py-0.5 shadow-lg">
-          {FREE_FEATURES.title} <Layers2Icon className="inline-block size-6" />
-        </h3>
-        <p className="text-primary/80">
-          {FREE_FEATURES.description}
-        </p>
-        <div className="flex justify-center items-baseline my-8">
-          <span className="mr-2 text-5xl font-extrabold">${FREE_FEATURES.price}</span>
+    <>
+      <div className="animate-fade-in-up grid gap-10 grid-cols-1 md:grid-cols-2">
+        <div className="flex flex-col p-6 w-full mx-auto max-w-md text-gray-900 bg-white rounded-2xl border-2 shadow border-black xl:p-8">
+          <div className="flex items-center space-x-2">
+            <div className="h-5 w-5 rounded-full bg-black" />
+            <h3 className="font-display text-2xl font-bold text-black">
+              {FREE_FEATURES.title}
+            </h3>
+          </div>
+          <p className="text-primary/80">
+            {FREE_FEATURES.description}
+          </p>
+          <div className="flex items-baseline my-8">
+            <span className="mr-2 text-5xl font-extrabold">${FREE_FEATURES.price}</span>
+          </div>
+          <ul role="list" className="mb-8 space-y-4 text-left">
+            {FREE_FEATURES.features.map((feature) => (
+              <li key={feature} className="flex items-center text-sm space-x-3">
+                <CircleCheckIcon />
+                <span className='text-primary/75'>{feature}</span>
+              </li>
+            ))}
+          </ul>
+          <Link href={userId ? "/app" : "/signin"} className={cn(buttonVariants(), 'mt-auto')}>
+            Start for free
+          </Link>
         </div>
-        <ul role="list" className="mb-8 space-y-4 text-left">
-          {FREE_FEATURES.features.map((feature) => (
-            <li key={feature} className="flex items-center text-sm space-x-3">
-              <CheckIcon className="text-green-400" />
-              <span className='text-primary/75'>{feature}</span>
-            </li>
-          ))}
-        </ul>
-        <Link href={userId ? "/app" : "/signin"} className={cn(buttonVariants(), 'mt-auto')}>
-          Start for free
-        </Link>
-      </div>
-      <div className="flex flex-col p-6 w-full mx-auto max-w-md text-center text-gray-900 bg-white rounded-lg border-2 shadow border-[#63e] xl:p-8">
-        <h3 className="mb-4 text-2xl font-semibold bg-[#63e] text-white w-max mx-auto rounded-full px-6 py-0.5 shadow-lg">
-          {PRO_FEATURES.title} <Layers2Icon className="inline-block size-6" />
-        </h3>
-        <p className="text-primary/80">
-          {PRO_FEATURES.description}
-        </p>
-        <div className="flex justify-center items-baseline my-8">
-          <span className="mr-2 text-5xl font-extrabold">${PRO_FEATURES.price}</span>
-          <span className="text-primary/80">/month</span>
+        <div className="relative flex flex-col p-6 w-full mx-auto max-w-md text-center text-gray-900 bg-white rounded-2xl border-2 shadow border-[#63e] xl:p-8">
+          <div className="absolute -top-5 left-0 right-0 mx-auto w-32 rounded-full bg-gradient-to-r from-[#63e] to-purple-600 px-3 py-2 text-center text-sm font-medium text-white">
+            Credits
+          </div>
+          <div className="flex items-center space-x-2 mb-2">
+            <div className="h-5 w-5 rounded-full bg-gradient-to-r from-[#63e] to-purple-600" />
+            <h3 className="font-display text-2xl font-bold text-black">
+              {CREDITS.title}
+            </h3>
+          </div>
+          <Tabs defaultValue="pro" className="w-full">
+            <TabsList className="grid w-full grid-cols-3 font-bold border">
+              <TabsTrigger value="basic">Basic</TabsTrigger>
+              <TabsTrigger value="pro">Pro</TabsTrigger>
+              <TabsTrigger value="goat">GOAT</TabsTrigger>
+            </TabsList>
+            <TabsContent value="basic">
+              <p className="text-primary/80 mt-2">
+                {CREDITS.description}
+              </p>
+              <div className="flex justify-center items-baseline my-8">
+                <span className="mr-2 text-5xl font-extrabold">$5</span>
+                <span className="text-primary/80 text-purple-500">/ 50 credits</span>
+              </div>
+            </TabsContent>
+            <TabsContent value="pro">
+              <p className="text-primary/80 mt-2">
+                {CREDITS.description}
+              </p>
+              <div className="flex justify-center items-baseline my-8">
+                <span className="mr-2 text-5xl font-extrabold">$9</span>
+                <span className="text-primary/80 text-purple-500">/ 100 credits</span>
+              </div>
+            </TabsContent>
+            <TabsContent value="goat">
+              <p className="text-primary/80 mt-2">
+                {CREDITS.description}
+              </p>
+              <div className="flex justify-center items-baseline my-8">
+                <span className="mr-2 text-5xl font-extrabold">$15</span>
+                <span className="text-primary/80 text-purple-500">/ 250 credits</span>
+              </div>
+            </TabsContent>
+          </Tabs>
+          <ul role="list" className="mb-8 space-y-4 text-left">
+            {CREDITS.features.map((feature) => (
+              <li key={feature} className="flex items-center text-sm space-x-3">
+                <CircleCheckIcon className="text-purple-500" />
+                <span className='text-primary/75'>{feature}</span>
+              </li>
+            ))}
+          </ul>
+          <form
+            className="w-full"
+            action={async () => {
+              "use server"
+
+              if (!userId) {
+                redirect("/signin")
+              }
+
+              const { redirectUrl } = await checkoutAction(userId, 50)
+              redirect(redirectUrl)
+            }}
+          >
+            <SubmitButton className="w-full" disabled>
+              Get started (coming soon)
+            </SubmitButton>
+          </form>
         </div>
-        <ul role="list" className="mb-8 space-y-4 text-left">
-          {PRO_FEATURES.features.map((feature) => (
-            <li key={feature} className="flex items-center text-sm space-x-3">
-              <CheckIcon className="text-green-400" />
-              <span className='text-primary/75'>{feature}</span>
-            </li>
-          ))}
-        </ul>
-        <form
-          className="w-full"
-          action={async () => {
-            "use server"
-
-            if (!userId) {
-              redirect("/signin")
-            }
-
-            const { redirectUrl } = await getSubscriptionCheckoutUrl(userId)
-            redirect(redirectUrl)
-          }}
-        >
-          <SubmitButton className="w-full" disabled>
-            Get started (coming soon)
-          </SubmitButton>
-        </form>
       </div>
-    </div>
+      <small className='text-xs text-white/50'>
+        *Credits are used to get AI chapters transcriptions. 1 credit = 1 chapters result. Unused credits do not expire.
+      </small>
+    </>
   )
 }

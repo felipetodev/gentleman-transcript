@@ -25,8 +25,7 @@ export const users = createTable(
       .notNull(),
     updatedAt: int("updatedAt", { mode: "timestamp" }),
     stripeCustomerId: text("stripe_customer_id"),
-    package: text("package"),
-    status: text("status").default("INACTIVE"),
+    credits: int("credits", { mode: "number" }).default(5).notNull(),
   },
   // (example) => ({
   //   nameIndex: index("name_idx").on(example.name),

@@ -13,7 +13,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <>
-      <HeaderDashboard status={account?.status} />
+      <HeaderDashboard
+        credits={account?.credits}
+        hasPayment={Boolean(account?.stripeCustomerId)}
+      />
       <main className="animate-fade-in-up flex flex-col justify-center mx-auto h-[calc(100%-48px)] max-w-4xl gap-y-3">
         {children}
       </main>

@@ -43,10 +43,12 @@ const TranscriptForm = () => {
   const { completion, complete, isLoading } = useCompletion({
     api: 'api/completion',
     onError: (error) => {
-      if (error.message.includes("Upgrade to Pro")) {
+      if (error.message.includes("You have no credits left")) {
         toast.warning(error.message)
       } else {
-        toast.error('Something went wrong, please try again later.')
+        toast.error(
+          "An internal server error occurred. Please contact our support if the problem persists."
+        )
       }
     }
   });

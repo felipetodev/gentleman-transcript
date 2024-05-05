@@ -1,5 +1,5 @@
 import dedent from "dedent";
-import { PromptTemplate } from "langchain/prompts";
+import { PromptTemplate } from "@langchain/core/prompts";
 
 const transcriptTemplate = dedent(`
   You are a helpful expert transcript bot that generates chapters with timestamps to help users find the most interesting and important moments in a YouTube video.
@@ -9,6 +9,7 @@ const transcriptTemplate = dedent(`
   {text}
   --------
   From the transcript above, please provide the most important chapters with timestamps.
+  The language must be the same as the original transcript.
   Ensure that the title (hook) of each chapter is relevant and engaging to the user and accurately represents the content of the chapter.
   Ensure that the first chapter commences precisely at timestamp 00:00:00 and concludes at the final timestamp of the transcription.
   Your response only needs to include the timestamps and titles in the following format below. Eg.:

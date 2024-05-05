@@ -11,7 +11,7 @@ import { getAuth } from '@clerk/nextjs/server';
 import { env } from '@/env';
 import { db } from '@/server/db';
 import { users } from '@/server/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,12 +29,16 @@ export async function POST(req: NextRequest) {
     where: eq(users.userId, userId)
   })
 
+  if (!account) {
+    throw new Error('Unauthorized');
+  }
+
   const llmChoice = cookies().get("local-llm")
   const localLLM = llmChoice ? JSON.parse(llmChoice.value) : undefined
 
-  if (account?.status !== "ACTIVE" && !localLLM) {
+  if (account.credits < 1 && !localLLM) {
     return new Response(
-      "Upgrade to Pro to get access to this feature.",
+      "You have no credits left. Please purchase more credits to continue.",
       { status: 402 },
     );
   }
@@ -66,12 +70,31 @@ export async function POST(req: NextRequest) {
 
   const { stream, handlers } = LangChainStream();
 
+  if (!localLLM) {
+    await db.update(users)
+      .set({
+        credits: sql`${users.credits} - 1`,
+      })
+      .where(eq(users.userId, userId))
+  }
+
   chain.invoke(
     {
       input_documents: docs,
     },
     { callbacks: [handlers], metadata: { account } }
-  );
+  ).catch(async (error) => {
+    console.error("[API error occurred]", error as Error);
+
+    // Increment their credit if something went wrong
+    if (!localLLM) {
+      await db.update(users)
+        .set({
+          credits: sql`${users.credits} + 1`,
+        })
+        .where(eq(users.userId, userId))
+    }
+  })
 
   return new StreamingTextResponse(stream);
 }

@@ -14,7 +14,9 @@ export const env = createEnv({
     STRIPE_PUBLIC_KEY: z.string(),
     STRIPE_SECRET_KEY: z.string(),
     STRIPE_WEBHOOK_SECRET: z.string(),
-    STRIPE_SUBSCRIPTION_PRICE_ID: z.string(),
+    STRIPE_PRICE_ID_50: z.string(),
+    STRIPE_PRICE_ID_100: z.string(),
+    STRIPE_PRICE_ID_250: z.string(),
     URL: z.string().url().optional(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
@@ -43,7 +45,9 @@ export const env = createEnv({
     STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
-    STRIPE_SUBSCRIPTION_PRICE_ID: process.env.STRIPE_SUBSCRIPTION_PRICE_ID,
+    STRIPE_PRICE_ID_50: process.env.STRIPE_PRICE_ID_50,
+    STRIPE_PRICE_ID_100: process.env.STRIPE_PRICE_ID_100,
+    STRIPE_PRICE_ID_250: process.env.STRIPE_PRICE_ID_250,
     URL: process.env.URL,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
