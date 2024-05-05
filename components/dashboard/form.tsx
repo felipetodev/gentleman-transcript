@@ -9,6 +9,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge";
 import { Message } from '@/components/dashboard/message'
 import { TranscriptGenerator } from "@/components/dashboard/transcript-generator";
 import { Loader } from "@/components/loader"
@@ -74,9 +75,9 @@ const TranscriptForm = () => {
           >
             {isLoading ? (
               <span className="ml-2 text-purple-500">
-                Generating transcript...
+                Generating chapters...
               </span>
-            ) : "Transcript"}
+            ) : "Chapters / Timestamps"}
           </TabsTrigger>
         </TabsList>
         <TabsContent value="form">
@@ -108,9 +109,9 @@ const TranscriptForm = () => {
                 ? <><Loader className="mr-2" /> Transcribing...</>
                 : 'Transcript it! ✨'}
             </Button>
-            <span className="border rounded-lg bg-primary text-secondary absolute top-2 right-2 text-xs px-3 py-1 text-center">
+            <Badge className="absolute top-2 right-2">
               {message.length}
-            </span>
+            </Badge>
           </form>
         </TabsContent>
         <TabsContent value="transcript">
