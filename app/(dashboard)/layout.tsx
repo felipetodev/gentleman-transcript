@@ -14,6 +14,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <>
       <HeaderDashboard
+        user={Boolean(userId)}
         credits={account?.credits}
         hasPayment={Boolean(account?.stripeCustomerId)}
       />
