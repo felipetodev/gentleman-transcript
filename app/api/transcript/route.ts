@@ -87,7 +87,9 @@ export async function POST(req: NextRequest) {
     views: player.videoDetails.viewCount,
   }
 
-  console.log(metadata)
+  if (!player.captions) {
+    return NextResponse.json({ error: 'Transcript not available' }, { status: 400 });
+  }
 
   // Get the tracks and sort them by priority
   const tracks = player.captions.playerCaptionsTracklistRenderer.captionTracks;
