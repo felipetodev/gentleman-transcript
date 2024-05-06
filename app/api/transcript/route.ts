@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
   const parsed = (transcript.events as Events[])
     .map((t) => ({
       segs: t.segs,
-      timestamp: `${millisecondsToTime(t.tStartMs)} --> ${millisecondsToTime(t.tStartMs + (t.dDurationMs ?? 0))}`,
+      timestamp: `${millisecondsToTime(t.tStartMs - 100)} --> ${millisecondsToTime((t.tStartMs - 100) + (t.dDurationMs ?? 0))}`,
     }))
     .filter((t) => t.segs)
     .filter(x => Boolean(x.segs?.[0].utf8.replace('\n', '')))
