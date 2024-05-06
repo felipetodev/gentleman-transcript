@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import {
@@ -37,11 +38,15 @@ function useTranscriptForm() {
 }
 
 const TranscriptForm = () => {
+  const router = useRouter()
   const [message, setMessage] = React.useState("")
   const [loadTranscript, setLoadTranscript] = React.useState(false)
 
   const { completion, complete, isLoading } = useCompletion({
     api: 'api/completion',
+    onFinish: () => {
+      router.refresh()
+    },
     onError: (error) => {
       if (error.message.includes("You have no credits left")) {
         toast.warning(error.message)
