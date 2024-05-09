@@ -14,6 +14,7 @@ import { users } from '@/server/db/schema';
 import { eq, sql } from 'drizzle-orm';
 
 export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
 
 export async function POST(req: NextRequest) {
   const { prompt: message } = await req.json() as { prompt: string };
