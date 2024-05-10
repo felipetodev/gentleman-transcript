@@ -29,7 +29,7 @@ export default function App() {
           Get Started
         </Link>
       </div>
-      <div className="flex flex-col md:flex-row mx-auto mt-20 text-xs md:text-base gap-x-0 md:gap-x-4">
+      <div className="animate-fade-in-up duration-700 flex flex-col md:flex-row mx-auto mt-20 text-xs md:text-base gap-x-0 md:gap-x-4">
         <div className="flex text-secondary space-x-4 opacity-70">
           <span className="inline-flex items-center">
             <CheckIcon className="text-green-400 size-4 mr-1.5" />
