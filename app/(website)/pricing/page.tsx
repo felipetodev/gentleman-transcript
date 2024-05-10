@@ -18,7 +18,7 @@ const FREE_FEATURES = {
   price: 0,
   description: 'For hobby & casual users.',
   features: [
-    '5 free credits for new users',
+    '10 free credits for new users',
     'Unlimited Llama 3 local AI transcriptions',
     'Basic support'
   ]
@@ -138,7 +138,7 @@ export default async function PricingPage() {
         </div>
       </div>
       <small className='text-xs text-white/50'>
-        *Credits are used to get AI chapters transcriptions. 1 credit = 1 chapters result. Unused credits do not expire.
+        *Credits are used to get AI chapters transcriptions. 1 credit = 1 chapters result (whole video). Unused credits do not expire.
       </small>
     </>
   )
