@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { SparklesIcon } from "lucide-react";
+import { CheckIcon, SparklesIcon } from "lucide-react";
 import { Footer } from "@/components/footer";
 
 export default function App() {
@@ -18,10 +18,10 @@ export default function App() {
           Gentleman Transcript
         </h1>
         <h2 className="text-3xl text-center opacity-80">
-          Get your YouTube videos transcribed in one click.
+          Add chapters to your YouTube videos in one click.
         </h2>
         <span className="text-base text-center max-w-xl opacity-70 text-pretty">
-          The best way to reach a broader audience is by providing subtitles and transcripts for your videos. Gentleman Transcript makes it easy to get your videos transcribed in just a one click.
+          The best way to reach a broader audience is by providing engaging chapters with timestamps. Gentleman Transcript makes it easy to get your videos summarized and structured.
         </span>
       </div>
       <div className="mx-auto mt-14 animate-fade-in-up duration-700">
@@ -29,7 +29,29 @@ export default function App() {
           Get Started
         </Link>
       </div>
-      <div className="animate-fade-in-up duration-700 mt-20 mb-14 p-2 rounded-[23px] lg:rounded-[29px] border-2 border-[#63e]/80 bg-gray-900/5 [box-shadow:_0px_0px_3px_1px_rgba(112,_116,_123,_0.05)]">
+      <div className="flex flex-col md:flex-row mx-auto mt-20 text-xs md:text-base gap-x-0 md:gap-x-4">
+        <div className="flex text-secondary space-x-4 opacity-70">
+          <span className="inline-flex items-center">
+            <CheckIcon className="text-green-400 size-4 mr-1.5" />
+            Save time
+          </span>
+          <span className="inline-flex items-center">
+            <CheckIcon className="text-green-400 size-4 mr-1.5" />
+            Grow your audience
+          </span>
+        </div>
+        <div className="flex text-secondary space-x-4 opacity-70">
+          <span className="inline-flex items-center">
+            <CheckIcon className="text-green-400 size-4 mr-1.5" />
+            Drive traffic
+          </span>
+          <span className="inline-flex items-center">
+            <CheckIcon className="text-green-400 size-4 mr-1.5" />
+            Increase conversions
+          </span>
+        </div>
+      </div>
+      <div className="animate-fade-in-up duration-700 mb-14 p-2 rounded-[23px] lg:rounded-[29px] border-2 border-[#63e]/80 bg-gray-900/5 [box-shadow:_0px_0px_3px_1px_rgba(112,_116,_123,_0.05)]">
         <video
           loop
           muted
