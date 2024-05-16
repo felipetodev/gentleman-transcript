@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       model: "llama3"
     })
     : new ChatOpenAI({
-      model: 'gpt-3.5-turbo',
+      model: env.OPENAI_MODEL_ID,
       temperature: 0.2,
       streaming: true,
       apiKey: env.OPENAI_API_KEY,
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
 
   const chain = loadSummarizationChain(llm, {
     type: "refine",
-    verbose: true,
+    verbose: process.env.NODE_ENV === "development",
     questionPrompt: TRANSCRIPT_PROMPT,
     refinePrompt: TRANSCRIPT_REFINE_PROMPT,
   });
@@ -83,7 +83,11 @@ export async function POST(req: NextRequest) {
     {
       input_documents: docs,
     },
-    { callbacks: [handlers], metadata: { account } }
+    {
+      callbacks: [handlers],
+      metadata: { account },
+      tags: [env.OPENAI_MODEL_ID]
+    }
   ).catch(async (error) => {
     console.error("[API error occurred]", error as Error);
 
