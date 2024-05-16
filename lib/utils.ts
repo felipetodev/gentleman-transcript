@@ -5,6 +5,9 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+// up to 2h of transcription approx
+export const MAX_TRANSCRIPT_LENGTH = 200000
+
 export const placeholder = `\
 Fireship "Supabase in 100 Seconds" transcript example:
 

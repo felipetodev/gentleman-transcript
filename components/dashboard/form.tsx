@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Message } from '@/components/dashboard/message'
 import { TranscriptGenerator } from "@/components/dashboard/transcript-generator";
 import { Loader } from "@/components/loader"
-import { placeholder } from "@/lib/utils"
+import { MAX_TRANSCRIPT_LENGTH, cn, placeholder } from "@/lib/utils"
 import { useCompletion } from "ai/react"
 import { completionSchema } from "@/lib/schema"
 import { toast } from "sonner"
@@ -66,6 +66,8 @@ const TranscriptForm = () => {
     setMessage(message)
   }
 
+  const hasLimitLength = message.length > MAX_TRANSCRIPT_LENGTH
+
   return (
     <TranscriptFormContext.Provider
       value={{
@@ -100,6 +102,12 @@ const TranscriptForm = () => {
                 return toast.warning('Please enter a valid transcript')
               }
 
+              if (hasLimitLength) {
+                return toast.error(
+                  `Transcript is too long. Please enter a transcript with less than ${MAX_TRANSCRIPT_LENGTH} characters.`
+                )
+              }
+
               complete(inputValidation.data)
             }}
           >
@@ -116,8 +124,12 @@ const TranscriptForm = () => {
                 ? <><Loader className="mr-2" /> Transcribing...</>
                 : 'Transcript it! ✨'}
             </Button>
-            <Badge className="absolute top-2 right-2">
-              {message.length}
+            <Badge
+              className={cn("absolute top-2 right-2", {
+                "bg-red-600 hover:bg-red-600/80": hasLimitLength
+              })}
+            >
+              {new Intl.NumberFormat("es").format(MAX_TRANSCRIPT_LENGTH)} / {new Intl.NumberFormat("es").format(message.length)}
             </Badge>
           </form>
         </TabsContent>
