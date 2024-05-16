@@ -129,17 +129,15 @@ export async function POST(req: NextRequest) {
 }
 
 function millisecondsToTime(duration: number): string {
-  let milliseconds: string | number = parseInt(((duration % 1000)).toString()),
-    seconds: string | number = Math.floor((duration / 1000) % 60),
-    minutes: string | number = Math.floor((duration / (1000 * 60)) % 60),
-    hours: string | number = Math.floor((duration / (1000 * 60 * 60)) % 24);
+  if (duration <= 0) return "00:00:00";
 
-  hours = (hours < 10) ? "0" + hours : hours;
-  minutes = (minutes < 10) ? "0" + minutes : minutes;
-  seconds = (seconds < 10) ? "0" + seconds : seconds;
-  milliseconds = (milliseconds < 100) ? (milliseconds < 10 ? "00" + milliseconds : "0" + milliseconds) : milliseconds;
+  const seconds = Math.floor((duration / 1000) % 60);
+  const minutes = Math.floor((duration / (1000 * 60)) % 60);
+  const hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
-  milliseconds = Math.round(Number(milliseconds) / 10);
+  const hh = hours < 10 ? "0" + hours : hours;
+  const mm = minutes < 10 ? "0" + minutes : minutes;
+  const ss = seconds < 10 ? "0" + seconds : seconds;
 
-  return hours + ":" + minutes + ":" + seconds + ":" + milliseconds;
+  return `${hh}:${mm}:${ss}`
 }
