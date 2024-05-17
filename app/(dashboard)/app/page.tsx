@@ -7,7 +7,9 @@ export default function TranscriptPage() {
   const defaultLLM = llm ? JSON.parse(llm.value) : undefined
   return (
     <>
-      <LLMSwitch llm={defaultLLM} />
+      {process.env.NODE_ENV === "development" && (
+        <LLMSwitch llm={defaultLLM} />
+      )}
       <TranscriptForm />
     </>
   );
