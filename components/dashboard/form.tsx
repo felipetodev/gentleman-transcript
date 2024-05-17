@@ -121,8 +121,8 @@ const TranscriptForm = () => {
             />
             <Button size="lg" className="w-full font-semibold text-lg" disabled={isLoading}>
               {isLoading
-                ? <><Loader className="mr-2" /> Transcribing...</>
-                : 'Transcript it! ✨'}
+                ? <><Loader className="mr-2" /> Generating Chapters...</>
+                : 'Generate Chapters'}
             </Button>
             <Badge
               className={cn("absolute top-2 right-2", {
@@ -137,6 +137,14 @@ const TranscriptForm = () => {
           <Message
             isLoading={isLoading}
             content={completion}
+            onClick={() => {
+              if (hasLimitLength) {
+                return toast.error(
+                  `Transcript is too long. Please enter a transcript with less than ${MAX_TRANSCRIPT_LENGTH} characters.`
+                )
+              }
+              complete(message)
+            }}
           />
         </TabsContent>
       </Tabs >

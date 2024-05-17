@@ -2,10 +2,16 @@ import Markdown from 'react-markdown'
 import { toast } from "sonner"
 import { ClipboardIcon } from 'lucide-react'
 import { Loader } from '@/components/loader'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-export function Message({ content, isLoading }: { content?: string, isLoading: boolean }) {
+type Props = {
+  content?: string;
+  isLoading: boolean;
+  onClick: () => void;
+}
 
+export function Message({ content, isLoading, onClick }: Props) {
   function copyToClipboard() {
     if (content) {
       navigator.clipboard.writeText(content.replaceAll('.- ', '.\n- '))
@@ -18,7 +24,7 @@ export function Message({ content, isLoading }: { content?: string, isLoading: b
       <div
         role="button"
         onClick={copyToClipboard}
-        className={cn("relative p-4 bg-gray-800/30 rounded-lg h-[500px] border border-gray-500/50 text-white overflow-y-auto", {
+        className={cn("relative p-4 bg-gray-800/30 rounded-lg h-[500px] border border-gray-500/50 text-white overflow-y-auto mb-4", {
           'cursor-not-allowed': !content,
           'cursor-copy': content,
         })}
@@ -40,11 +46,16 @@ export function Message({ content, isLoading }: { content?: string, isLoading: b
           'visible opacity-100': (content && !isLoading),
         })}
       />
-      {isLoading && (
-        <span className='absolute right-4 bottom-4'>
-          <Loader />
-        </span>
-      )}
+      <Button
+        size="lg"
+        className="w-full font-semibold text-lg"
+        disabled={(isLoading || !content)}
+        onClick={onClick}
+      >
+        {isLoading
+          ? <><Loader className="mr-2" /> Generating...</>
+          : 'Regenerate ✨'}
+      </Button>
     </div>
   )
 }
