@@ -12,13 +12,15 @@ type Props = {
 export function HeaderDashboard({ user = false, credits = 0, hasPayment }: Props) {
   return (
     <header className="h-12 flex items-center justify-between px-6">
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-1 md:space-x-2">
         <Link
           href="/"
-          className="flex items-center text-lg text-secondary font-bold tracking-tight"
+          className="flex items-center md:text-lg text-secondary font-bold tracking-tight"
         >
-          <Moustache className="size-10 mr-2" />
-          Gentleman Transcript
+          <Moustache className="size-10 mr-1 md:mr-2" />
+          <span className="hidden md:flex">
+            Gentleman Transcript
+          </span>
         </Link>
         {user && (
           <>

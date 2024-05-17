@@ -20,7 +20,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         credits={account?.credits}
         hasPayment={Boolean(account?.stripeCustomerId)}
       />
-      <main className="animate-fade-in-up flex flex-col justify-center mx-auto h-[calc(100%-48px)] max-w-4xl gap-y-3">
+      <main className="animate-fade-in-up flex flex-col justify-center mx-auto px-4 h-[calc(100%-48px)] max-w-4xl gap-y-3">
         {children}
       </main>
     </>
