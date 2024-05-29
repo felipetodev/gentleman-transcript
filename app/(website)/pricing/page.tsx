@@ -19,7 +19,6 @@ const FREE_FEATURES = {
   description: 'For hobby & casual users.',
   features: [
     '10 free credits for new users',
-    'Unlimited Llama 3 local AI transcriptions',
     'Basic support'
   ]
 }

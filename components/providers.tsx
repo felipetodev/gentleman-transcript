@@ -6,7 +6,7 @@ import { type ThemeProviderProps } from "next-themes/dist/types"
 
 export function Providers({ children }: ThemeProviderProps) {
   return (
-    <ClerkProvider >
+    <ClerkProvider>
       {children}
     </ClerkProvider>
   )
