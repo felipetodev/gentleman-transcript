@@ -8,10 +8,10 @@ import { cn } from '@/lib/utils'
 type Props = {
   content?: string;
   isLoading: boolean;
-  onClick: () => void;
+  onRegenerate: () => void;
 }
 
-export function Message({ content, isLoading, onClick }: Props) {
+export function Message({ content, isLoading, onRegenerate }: Props) {
   function copyToClipboard() {
     if (content) {
       navigator.clipboard.writeText(content.replaceAll('.- ', '.\n- '))
@@ -50,7 +50,7 @@ export function Message({ content, isLoading, onClick }: Props) {
         size="lg"
         className="w-full font-semibold text-lg"
         disabled={(isLoading || !content)}
-        onClick={onClick}
+        onClick={onRegenerate}
       >
         {isLoading
           ? <><Loader className="mr-2" /> Generating...</>

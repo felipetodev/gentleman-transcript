@@ -14,7 +14,7 @@ export function TranscriptGenerator() {
 
   const {
     isLoadingTranscript,
-    onSetMessage,
+    onSetTranscript,
     onLoadingTranscript
   } = useTranscriptForm()
 
@@ -50,7 +50,7 @@ export function TranscriptGenerator() {
             if (res.ok) {
               const { parsedTranscript, metadata } = await res.json()
               successTranscriptRef.current = true
-              onSetMessage(parsedTranscript)
+              onSetTranscript(parsedTranscript)
               toast.success(
                 <div className="mx-auto grid text-center gap-1">
                   <span className="font-semibold">Transcript video generated successfully!</span>

@@ -22,7 +22,7 @@ import { toast } from "sonner"
 type FormContextProps = {
   isLoadingTranscript: boolean;
   onLoadingTranscript: (boolean: boolean) => void;
-  onSetMessage: (message: string) => void;
+  onSetTranscript: (message: string) => void;
 };
 
 export const TranscriptFormContext = React.createContext<FormContextProps | null>(null);
@@ -39,7 +39,7 @@ function useTranscriptForm() {
 
 const TranscriptForm = () => {
   const router = useRouter()
-  const [message, setMessage] = React.useState("")
+  const [transcriptCaptions, setTranscriptCaptions] = React.useState("")
   const [loadTranscript, setLoadTranscript] = React.useState(false)
 
   const { completion, complete, isLoading } = useCompletion({
@@ -62,18 +62,18 @@ const TranscriptForm = () => {
     setLoadTranscript(value)
   }
 
-  const onSetMessage = (message: string) => {
-    setMessage(message)
+  const onSetTranscript = (message: string) => {
+    setTranscriptCaptions(message)
   }
 
-  const hasLimitLength = message.length > MAX_TRANSCRIPT_LENGTH
+  const hasLimitLength = transcriptCaptions.length > MAX_TRANSCRIPT_LENGTH
 
   return (
     <TranscriptFormContext.Provider
       value={{
         isLoadingTranscript: loadTranscript,
         onLoadingTranscript,
-        onSetMessage
+        onSetTranscript
       }}
     >
       <Tabs defaultValue="form">
@@ -96,7 +96,7 @@ const TranscriptForm = () => {
             onSubmit={(e) => {
               e.preventDefault()
 
-              const inputValidation = completionSchema.safeParse(message)
+              const inputValidation = completionSchema.safeParse(transcriptCaptions)
 
               if (!inputValidation.success) {
                 return toast.warning('Please enter a valid transcript')
@@ -114,8 +114,8 @@ const TranscriptForm = () => {
             <Textarea
               name="message"
               id="message"
-              value={message}
-              onChange={({ target }) => setMessage(target.value)}
+              value={transcriptCaptions}
+              onChange={({ target }) => setTranscriptCaptions(target.value)}
               className="min-h-[500px] mb-4"
               placeholder={loadTranscript ? "Getting transcript from the YouTube video..." : placeholder}
             />
@@ -129,7 +129,7 @@ const TranscriptForm = () => {
                 "bg-red-600 hover:bg-red-600/80": hasLimitLength
               })}
             >
-              {new Intl.NumberFormat("es").format(MAX_TRANSCRIPT_LENGTH)} / {new Intl.NumberFormat("es").format(message.length)}
+              {new Intl.NumberFormat("es").format(MAX_TRANSCRIPT_LENGTH)} / {new Intl.NumberFormat("es").format(transcriptCaptions.length)}
             </Badge>
           </form>
         </TabsContent>
@@ -137,13 +137,13 @@ const TranscriptForm = () => {
           <Message
             isLoading={isLoading}
             content={completion}
-            onClick={() => {
+            onRegenerate={() => {
               if (hasLimitLength) {
                 return toast.error(
                   `Transcript is too long. Please enter a transcript with less than ${MAX_TRANSCRIPT_LENGTH} characters.`
                 )
               }
-              complete(message)
+              complete(transcriptCaptions)
             }}
           />
         </TabsContent>
