@@ -1,7 +1,9 @@
+import Script from "next/script";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner"
 import { Providers } from "@/components/providers";
+import { env } from "@/env";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -25,6 +27,13 @@ export default function RootLayout({
           </main>
         </Providers>
         <Toaster position="top-center" richColors />
+        {process.env.NODE_ENV === "production" && (
+          <Script
+            async
+            src="https://cloud.umami.is/script.js"
+            data-website-id={env.UMAMI_SITE_ID}
+          />
+        )}
       </body>
     </html>
   );

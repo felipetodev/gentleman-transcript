@@ -22,6 +22,7 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
+    UMAMI_SITE_ID: z.string().optional(),
   },
 
   /**
@@ -51,6 +52,7 @@ export const env = createEnv({
     STRIPE_PRICE_ID_100: process.env.STRIPE_PRICE_ID_100,
     STRIPE_PRICE_ID_250: process.env.STRIPE_PRICE_ID_250,
     URL: process.env.URL,
+    UMAMI_SITE_ID: process.env.UMAMI_SITE_ID,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**
