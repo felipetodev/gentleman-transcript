@@ -1,4 +1,4 @@
-# Gentleman Transcripter
+# Gentleman Transcript
 
 ## Run Locally
 

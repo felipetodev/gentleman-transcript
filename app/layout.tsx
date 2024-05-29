@@ -7,8 +7,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Gentleman Transcripter",
-  description: "Transcript your YouTube videos easily and quickly with Gentleman Transcripter.",
+  title: "Gentleman Transcript",
+  description: "Transcript your YouTube videos easily and get instant timestamped chapters with just one click!",
 };
 
 export default function RootLayout({
